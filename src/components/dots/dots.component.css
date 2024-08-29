@@ -1,0 +1,14 @@
+:host {
+    flex: 1;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.dots {
+    display: grid;
+    height: 100%;
+    grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+
+}
+

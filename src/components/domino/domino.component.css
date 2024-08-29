@@ -1,0 +1,20 @@
+.domino {
+    --domino-height: 60px;
+    background-color: white;
+    height: var(--domino-height);
+    width: 120px;
+    border-width: 5px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.divider {
+    width: 5px;
+    height: var(--domino-height);
+    background-color: black;
+    margin-right: 5px;
+    margin-left: 5px;
+}
