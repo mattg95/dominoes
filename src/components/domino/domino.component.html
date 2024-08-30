@@ -1,6 +1,17 @@
-<div class="domino" [ngClass]="direction">
-    <dots [value]="values[0]"/>
+<div
+  (click)="handleClick($event)"
+  (cdkDragStarted)="handleDragStart($event)"
+  (cdkDragEnded)="handleDragEnd($event)"
+  #draggable="cdkDrag"
+  [class.pointer-events-none]="draggable._dragRef.isDragging()"
+  cdkDrag
+>
+  <div
+    class="domino"
+    [ngClass]="{ horizontal: !isVertical, vertical: isVertical }"
+  >
+    <dots [value]="values[0]" />
     <div class="divider"></div>
-    <dots [value]="values[1]"/>
-
+    <dots [value]="values[1]" />
+  </div>
 </div>
