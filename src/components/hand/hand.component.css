@@ -1,0 +1,10 @@
+:host {
+    position: absolute;
+    bottom: 0;
+}
+
+.hand {
+    display: flex;
+    flex-direction:row;
+  
+}

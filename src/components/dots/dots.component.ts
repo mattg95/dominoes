@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Dot } from '../domino/dot/dot.component';
+import { Dot } from '../dot/dot.component';
 
 @Component({
   selector: 'dots',

@@ -1,8 +1,10 @@
 .domino {
     --domino-height: 60px;
+    height: 60px;
     background-color: white;
     height: var(--domino-height);
-    width: 120px;
+    --domino-width: 120px;
+    width:120px;
     border-width: 5px;
     border-radius: 10px;
     display: flex;
@@ -17,4 +19,8 @@
     background-color: black;
     margin-right: 5px;
     margin-left: 5px;
+}
+
+.vertical {
+    transform: rotate(0.25turn)  translate(calc(-1 * var(--domino-width) / 2 + calc(var(--domino-height) / 2)) );
 }
