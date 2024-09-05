@@ -28,3 +28,8 @@
 .pointer-events-none {
     pointer-events: none;
   }
+
+  .outer-wrapper {
+    border-width: 10;
+    border-color: black;
+  }

@@ -1,10 +1,16 @@
+
 <div
-  (click)="handleClick($event)"
-  (cdkDragStarted)="handleDragStart($event)"
-  (cdkDragEnded)="handleDragEnd($event)"
-  #draggable="cdkDrag"
-  [class.pointer-events-none]="draggable._dragRef.isDragging()"
-  cdkDrag
+(click)="handleClick($event)"
+(cdkDragStarted)="handleDragStart($event)"
+(cdkDragEnded)="handleDragEnd($event)"
+#draggable="cdkDrag"
+[class.pointer-events-none]="draggable._dragRef.isDragging()"
+cdkDrag
+[cdkDragDisabled]="isDragDisabled"
+#domino
+id="domino"
+
+
 >
   <div
     class="domino"
@@ -15,3 +21,4 @@
     <dots [value]="values[1]" />
   </div>
 </div>
+

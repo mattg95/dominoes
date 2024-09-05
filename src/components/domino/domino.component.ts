@@ -1,8 +1,16 @@
-import { Component, Input } from '@angular/core';
+import {
+  Component,
+  ContentChild,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { Dots } from '../dots/dots.component';
 import { CommonModule } from '@angular/common';
 import { CdkDrag } from '@angular/cdk/drag-drop';
-import { CdkDragStart } from '@angular/cdk/drag-drop';
+import { CdkDragStart, CdkDragEnd, CdkDragMove } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'domino',
@@ -14,6 +22,26 @@ import { CdkDragStart } from '@angular/cdk/drag-drop';
 export class Domino {
   isVertical = false;
   public dragging = false;
+  public isDragDisabled = false;
+  @Output() positionChanged = new EventEmitter<DOMRect>();
+
+  @ViewChild('domino') domino!: ElementRef;
+
+  @ViewChild('draggable', { static: true }) draggable!: CdkDrag;
+
+  public setPosition(x: number, y: number) {
+    const currentPosition = this.draggable._dragRef.getFreeDragPosition();
+    this.draggable._dragRef.setFreeDragPosition({
+      x: currentPosition.x - x,
+      y: currentPosition.y - y,
+    });
+  }
+
+  private emitPosition() {
+    const rect = this.domino.nativeElement;
+
+    this.positionChanged.emit(rect);
+  }
 
   private rotate() {
     this.isVertical = !this.isVertical;
@@ -23,8 +51,9 @@ export class Domino {
     this.dragging = true;
   }
 
-  public handleDragEnd(_: CdkDragStart): void {
+  public handleDragEnd(_: CdkDragEnd): void {
     this.dragging = false;
+    this.emitPosition();
   }
 
   public handleClick(_: MouseEvent): void {
