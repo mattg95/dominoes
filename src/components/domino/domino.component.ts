@@ -10,7 +10,8 @@ import {
 import { Dots } from '../dots/dots.component';
 import { CommonModule } from '@angular/common';
 import { CdkDrag } from '@angular/cdk/drag-drop';
-import { CdkDragStart, CdkDragEnd, CdkDragMove } from '@angular/cdk/drag-drop';
+import { CdkDragStart, CdkDragEnd } from '@angular/cdk/drag-drop';
+import { Proximity } from '../../types';
 
 @Component({
   selector: 'domino',
@@ -20,9 +21,11 @@ import { CdkDragStart, CdkDragEnd, CdkDragMove } from '@angular/cdk/drag-drop';
   styleUrl: './domino.component.css',
 })
 export class Domino {
-  isVertical = false;
+  public isVertical = false;
   public dragging = false;
   public isLocked = false;
+  private snapBoxOverflow = 10;
+
   @Output() positionChanged = new EventEmitter<DOMRect>();
 
   @ViewChild('domino') domino!: ElementRef;
@@ -64,6 +67,24 @@ export class Domino {
       return;
     }
     this.rotate();
+  }
+
+  public snapToPlace(
+    { top, bottom, left, right }: Proximity,
+    currentComponent: Domino
+  ) {
+    const offset = 3;
+
+    if (bottom <= this.snapBoxOverflow || top <= this.snapBoxOverflow) {
+      if (left <= this.snapBoxOverflow) {
+        currentComponent.setPosition(left - offset, top);
+        currentComponent.isLocked = true;
+      }
+      if (right <= this.snapBoxOverflow) {
+        currentComponent.setPosition(right - offset, top);
+        currentComponent.isLocked = true;
+      }
+    }
   }
 
   @Input() values = [0, 0];

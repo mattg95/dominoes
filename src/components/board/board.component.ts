@@ -38,7 +38,7 @@ export class Board implements AfterViewInit {
           document.getElementById('domino') as HTMLElement
         ).getBoundingClientRect();
         const proximity = this.calculateEdgesProximity(currentRect, otherRect);
-        this.snapRectangles(proximity, currentComponent, 10);
+        currentComponent.snapToPlace(proximity, currentComponent);
       }
     });
   }
@@ -56,23 +56,5 @@ export class Board implements AfterViewInit {
       left,
       right,
     };
-  }
-
-  snapRectangles(
-    { top, bottom, left, right }: Proximity,
-    currentComponent: Domino,
-    proximity: number
-  ) {
-    const offset = 3;
-    if (bottom <= proximity || top <= proximity) {
-      if (left <= proximity) {
-        currentComponent.setPosition(left - offset, top);
-        currentComponent.isLocked = true;
-      }
-      if (right <= proximity) {
-        currentComponent.setPosition(right - offset, top);
-        currentComponent.isLocked = true;
-      }
-    }
   }
 }
