@@ -22,7 +22,7 @@ import { CdkDragStart, CdkDragEnd, CdkDragMove } from '@angular/cdk/drag-drop';
 export class Domino {
   isVertical = false;
   public dragging = false;
-  public isDragDisabled = false;
+  public isLocked = false;
   @Output() positionChanged = new EventEmitter<DOMRect>();
 
   @ViewChild('domino') domino!: ElementRef;
@@ -44,7 +44,9 @@ export class Domino {
   }
 
   private rotate() {
-    this.isVertical = !this.isVertical;
+    if (!this.isLocked) {
+      this.isVertical = !this.isVertical;
+    }
   }
 
   public handleDragStart(_: CdkDragStart): void {

@@ -67,11 +67,11 @@ export class Board implements AfterViewInit {
     if (bottom <= proximity || top <= proximity) {
       if (left <= proximity) {
         currentComponent.setPosition(left - offset, top);
-        currentComponent.isDragDisabled = true;
+        currentComponent.isLocked = true;
       }
       if (right <= proximity) {
         currentComponent.setPosition(right - offset, top);
-        currentComponent.isDragDisabled = true;
+        currentComponent.isLocked = true;
       }
     }
   }
