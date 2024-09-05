@@ -37,19 +37,38 @@ export class Board implements AfterViewInit {
         const otherRect = (
           document.getElementById('domino') as HTMLElement
         ).getBoundingClientRect();
-        const proximity = this.calculateEdgesProximity(currentRect, otherRect);
+        const proximity = this.calculateEdgesProximity(
+          currentRect,
+          otherRect,
+          currentComponent
+        );
         currentComponent.snapToPlace(proximity, currentComponent);
       }
     });
   }
 
-  calculateEdgesProximity(current: DOMRect, other: DOMRect): Proximity {
-    const left = Math.abs(current.left - other.right);
-    const right = Math.abs(current.right - other.left);
+  calculateEdgesProximity(
+    current: DOMRect,
+    other: DOMRect,
+    currentComponent: Domino
+  ): Proximity {
+    let top;
+    let bottom;
+    let right;
+    let left;
+    if (currentComponent.isVertical) {
+      left = current.x - other.x;
+      right = current.x - other.x;
 
-    const top = current.top - other.top;
-    const bottom = current.bottom - other.bottom;
+      top = Math.abs(current.y - (other.y + other.width));
+      bottom = Math.abs(current.y + current.width - other.y);
+    } else {
+      left = Math.abs(current.x - (other.x + other.width));
+      right = Math.abs(current.x + current.width - other.x);
 
+      top = current.y - other.top;
+      bottom = current.bottom - other.bottom;
+    }
     return {
       bottom,
       top,

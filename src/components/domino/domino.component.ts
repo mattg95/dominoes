@@ -74,8 +74,18 @@ export class Domino {
     currentComponent: Domino
   ) {
     const offset = 3;
+    if (currentComponent.isVertical && right <= this.snapBoxOverflow) {
+      if (top <= this.snapBoxOverflow) {
+        currentComponent.setPosition(left, top);
+        currentComponent.isLocked = true;
+      }
+      if (bottom <= this.snapBoxOverflow) {
+        currentComponent.setPosition(left, bottom);
+        currentComponent.isLocked = true;
+      }
+    }
 
-    if (bottom <= this.snapBoxOverflow || top <= this.snapBoxOverflow) {
+    if (!currentComponent.isVertical && bottom <= this.snapBoxOverflow) {
       if (left <= this.snapBoxOverflow) {
         currentComponent.setPosition(left - offset, top);
         currentComponent.isLocked = true;
