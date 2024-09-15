@@ -14,7 +14,7 @@ id="domino"
 >
   <div
     class="domino"
-    [ngClass]="{ horizontal: !isVertical, vertical: isVertical }"
+    [ngClass]="'transform' + direction"
   >
     <dots [value]="values[0]" />
     <div class="divider"></div>

@@ -21,9 +21,13 @@ import { Proximity } from '../../types';
   styleUrl: './domino.component.css',
 })
 export class Domino {
-  public isVertical = false;
+  public direction = 0;
   public dragging = false;
   public isLocked = false;
+
+  public getIsVertical() {
+    return this.direction % 2 == 1;
+  }
 
   @Output() positionChanged = new EventEmitter<DOMRect>();
 
@@ -32,6 +36,7 @@ export class Domino {
   @ViewChild('draggable', { static: true }) draggable!: CdkDrag;
 
   public setPosition(x: number, y: number) {
+    console.log('snappin');
     const currentPosition = this.draggable._dragRef.getFreeDragPosition();
     this.draggable._dragRef.setFreeDragPosition({
       x: currentPosition.x - x,
@@ -42,15 +47,50 @@ export class Domino {
 
   private emitPosition() {
     const rect = this.domino.nativeElement;
-
     this.positionChanged.emit(rect);
   }
 
   private rotate() {
     if (!this.isLocked) {
-      this.isVertical = !this.isVertical;
+      if (this.direction < 3) {
+        this.direction++;
+      } else {
+        this.direction = 0;
+      }
       this.emitPosition();
     }
+  }
+
+  public getRightValue() {
+    if (this.direction === 0) {
+      return this.values[1];
+    } else if (this.direction === 2) {
+      return this.values[0];
+    } else return null;
+  }
+
+  public getLeftValue() {
+    if (this.direction === 0) {
+      return this.values[0];
+    } else if (this.direction === 2) {
+      return this.values[1];
+    } else return null;
+  }
+
+  public getTopValue() {
+    if (this.direction === 1) {
+      return this.values[0];
+    } else if (this.direction === 3) {
+      return this.values[1];
+    } else return null;
+  }
+
+  public getBottomValue() {
+    if (this.direction === 1) {
+      return this.values[1];
+    } else if (this.direction === 3) {
+      return this.values[0];
+    } else return null;
   }
 
   public handleDragStart(_: CdkDragStart): void {

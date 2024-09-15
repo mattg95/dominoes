@@ -63,25 +63,34 @@ export class Board implements AfterViewInit {
     let right;
     let left;
     // both vertical
-    if (currentComponent.isVertical && otherComponent.isVertical) {
+    if (currentComponent.getIsVertical() && otherComponent.getIsVertical()) {
       left = current.x - other.x;
       right = current.x - other.x;
 
-      top = current.y - (other.y + other.width);
-      bottom = current.y + current.width - other.y;
+      top = Math.abs(current.y - (other.y + other.width));
+      bottom = Math.abs(current.y + current.width - other.y);
       // both horizontal
-    } else if (!currentComponent.isVertical && !otherComponent.isVertical) {
+    } else if (
+      !currentComponent.getIsVertical() &&
+      !otherComponent.getIsVertical()
+    ) {
       left = current.x - (other.x + other.width);
       right = current.x + current.width - other.x;
 
       top = current.y - other.top;
       bottom = current.bottom - other.bottom;
-    } else if (currentComponent.isVertical && !otherComponent.isVertical) {
+    } else if (
+      currentComponent.getIsVertical() &&
+      !otherComponent.getIsVertical()
+    ) {
       left = current.x - other.x - 90;
       right = current.x + 90 - other.x;
       top = current.y - other.y - 60;
       bottom = current.y - other.y;
-    } else if (!currentComponent.isVertical && otherComponent.isVertical) {
+    } else if (
+      !currentComponent.getIsVertical() &&
+      otherComponent.getIsVertical()
+    ) {
       left = current.x - 90 - other.x;
       right = current.x + 90 - other.x;
       top = current.y - other.y;
@@ -118,44 +127,58 @@ export class Board implements AfterViewInit {
     const topMinusWidth = Math.abs(absTop - 60);
     const bottomMinuswidth = Math.abs(absBottom - 60);
 
-    // console.log(leftMinusWidth, topMinusWidth, rightMinusWidth, leftMinusWidth);
-
-    console.log(leftMinusWidth);
-
     if (
-      currentComponent.isVertical &&
-      otherComponent.isVertical &&
+      currentComponent.getIsVertical() &&
+      otherComponent.getIsVertical() &&
       right <= this.snapBoxOverflow
     ) {
-      // domino joins from above
+      // domino joins others from below
       if (absTop <= this.snapBoxOverflow) {
-        currentComponent.setPosition(left, top);
+        if (
+          currentComponent.getTopValue() === otherComponent.getBottomValue()
+        ) {
+          currentComponent.setPosition(left, top);
+        }
       }
-      // domino joins from below
+      // domino joins from above
       if (absBottom <= this.snapBoxOverflow) {
-        currentComponent.setPosition(left, bottom);
+        if (
+          currentComponent.getBottomValue() === otherComponent.getTopValue()
+        ) {
+          currentComponent.setPosition(left, bottom);
+        }
       }
     }
     // both horizontal
     if (
-      !currentComponent.isVertical &&
-      !otherComponent.isVertical &&
+      !currentComponent.getIsVertical() &&
+      !otherComponent.getIsVertical() &&
       bottom <= this.snapBoxOverflow
     ) {
-      // domino joins from left
+      // domino joins others from right
       if (absLeft <= this.snapBoxOverflow) {
-        currentComponent.setPosition(left - offset, top);
+        if (
+          currentComponent.getLeftValue() === otherComponent.getRightValue()
+        ) {
+          currentComponent.setPosition(left - offset, top);
+        }
       }
-      // domino joins from right
+      // domino joins others from left
       if (absRight <= this.snapBoxOverflow) {
-        currentComponent.setPosition(right - offset, top);
+        if (
+          currentComponent.getRightValue() === otherComponent.getLeftValue()
+        ) {
+          currentComponent.setPosition(right - offset, top);
+        }
       }
     }
-    // current component vetical, other horizontal
+    // one vetical, other horizontal
     if (
-      (currentComponent.isVertical && !otherComponent.isVertical) ||
-      (!otherComponent.isVertical && currentComponent.isVertical)
+      (currentComponent.getIsVertical() && !otherComponent.getIsVertical()) ||
+      (!otherComponent.getIsVertical() && currentComponent.getIsVertical())
     ) {
+      console.log(top, bottom, left, right);
+
       // left side top alignment
       if (absLeft <= this.snapBoxOverflow && absTop <= this.snapBoxOverflow) {
         currentComponent.setPosition(left, top);

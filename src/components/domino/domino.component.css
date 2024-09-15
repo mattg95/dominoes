@@ -21,8 +21,16 @@
     margin-left: 5px;
 }
 
-.vertical {
-    transform: rotate(0.25turn)  translate(calc(-1 * var(--domino-width) / 2 + calc(var(--domino-height) / 2)) );
+.transform1 {
+    transform: rotate(0.25turn) 
+}
+
+.transform2 {
+    transform: rotate(0.5turn)  
+}
+
+.transform3 {
+    transform: rotate(0.75turn)  
 }
 
 .pointer-events-none {
