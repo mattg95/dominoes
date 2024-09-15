@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Input,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { Dots } from '../dots/dots.component';
@@ -24,17 +25,27 @@ export class Domino {
   public direction = 0;
   public dragging = false;
   public isLocked = false;
+  public isEnd = false;
   public rect = null;
 
-  public getIsVertical() {
-    return this.direction % 2 == 1;
-  }
+  @Input() values = [0, 0];
+  @Input() initial = false;
 
   @Output() positionChanged = new EventEmitter<DOMRect>();
 
   @ViewChild('domino') domino!: ElementRef;
-
   @ViewChild('draggable', { static: true }) draggable!: CdkDrag;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['initial']) {
+      this.isLocked = true;
+      this.isEnd = true;
+    }
+  }
+
+  public getIsVertical() {
+    return this.direction % 2 == 1;
+  }
 
   public setPosition(x: number, y: number) {
     console.log('snappin');
@@ -44,14 +55,15 @@ export class Domino {
       y: currentPosition.y - y,
     });
     this.isLocked = true;
+    this.isEnd = true;
   }
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.emitPosition();
   }
 
   private emitPosition() {
-    const rect = this.domino.nativeElement;
+    const rect = this.domino.nativeElement.getBoundingClientRect();
     this.rect = rect;
     this.positionChanged.emit(rect);
   }
@@ -115,6 +127,4 @@ export class Domino {
     }
     this.rotate();
   }
-
-  @Input() values = [0, 0];
 }

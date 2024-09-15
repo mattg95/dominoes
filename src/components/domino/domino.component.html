@@ -8,13 +8,14 @@
 cdkDrag
 [cdkDragDisabled]="isLocked"
 #domino
-id="domino"
 
 
 >
   <div
     class="domino"
     [ngClass]="'transform' + direction"
+    [ngClass]="{initial}"
+    
   >
     <dots [value]="values[0]" />
     <div class="divider"></div>

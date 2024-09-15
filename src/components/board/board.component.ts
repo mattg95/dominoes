@@ -32,9 +32,9 @@ export class Board implements AfterViewInit {
     });
   }
 
-  checkProximity(currentDomino: Domino) {
+  private checkProximity(currentDomino: Domino) {
     this.dominos.forEach((otherDomino) => {
-      if (otherDomino !== currentDomino) {
+      if (otherDomino !== currentDomino && otherDomino.isEnd) {
         const proximity = this.calculateEdgesProximity(
           currentDomino,
           otherDomino
@@ -45,17 +45,21 @@ export class Board implements AfterViewInit {
   }
 
   // calcualtes the prxomitiy between the dragged domino and another domino, measured from the dragged domino
-  calculateEdgesProximity(
+  private calculateEdgesProximity(
     currentDomino: Domino,
     otherDomino: Domino
   ): Proximity {
-    const current = currentDomino.rect;
-    const other = otherDomino.rect;
+    const current: DOMRect | null = currentDomino.rect;
+    const other: DOMRect | null = otherDomino.rect;
 
-    let top;
-    let bottom;
-    let right;
-    let left;
+    if (!current || !other) {
+      throw new Error('rect not initialised');
+    }
+
+    let top: number;
+    let bottom: number;
+    let right: number;
+    let left: number;
     // both vertical
     if (currentDomino.getIsVertical() && otherDomino.getIsVertical()) {
       left = current.x - other.x;
@@ -90,7 +94,17 @@ export class Board implements AfterViewInit {
     };
   }
 
-  public snapToPlace(
+  private lockDominos(
+    currentDomino: Domino,
+    otherDomino: Domino,
+    x: number,
+    y: number
+  ) {
+    currentDomino.setPosition(x, y);
+    otherDomino.isEnd = false;
+  }
+
+  private snapToPlace(
     { top, bottom, left, right }: Proximity,
     currentDomino: Domino,
     otherDomino: Domino
@@ -120,13 +134,13 @@ export class Board implements AfterViewInit {
       // domino joins others from below
       if (absTop <= this.snapBoxOverflow) {
         if (currentDomino.getTopValue() === otherDomino.getBottomValue()) {
-          currentDomino.setPosition(left, top);
+          this.lockDominos(currentDomino, otherDomino, left, top);
         }
       }
       // domino joins from above
       if (absBottom <= this.snapBoxOverflow) {
         if (currentDomino.getBottomValue() === otherDomino.getTopValue()) {
-          currentDomino.setPosition(left, bottom);
+          this.lockDominos(currentDomino, otherDomino, left, bottom);
         }
       }
     }
@@ -139,13 +153,13 @@ export class Board implements AfterViewInit {
       // domino joins others from right
       if (absLeft <= this.snapBoxOverflow) {
         if (currentDomino.getLeftValue() === otherDomino.getRightValue()) {
-          currentDomino.setPosition(left - offset, top);
+          this.lockDominos(currentDomino, otherDomino, left - offset, top);
         }
       }
       // domino joins others from left
       if (absRight <= this.snapBoxOverflow) {
         if (currentDomino.getRightValue() === otherDomino.getLeftValue()) {
-          currentDomino.setPosition(right - offset, top);
+          this.lockDominos(currentDomino, otherDomino, right - offset, top);
         }
       }
     }
@@ -154,41 +168,54 @@ export class Board implements AfterViewInit {
       (currentDomino.getIsVertical() && !otherDomino.getIsVertical()) ||
       (!otherDomino.getIsVertical() && currentDomino.getIsVertical())
     ) {
-      console.log(top, bottom, left, right);
-
       // left side top alignment
       if (absLeft <= this.snapBoxOverflow && absTop <= this.snapBoxOverflow) {
-        currentDomino.setPosition(left, top);
+        this.lockDominos(currentDomino, otherDomino, left, top);
       }
       if (
         leftMinusWidth <= this.snapBoxOverflow &&
         topMinusWidth <= this.snapBoxOverflow
       ) {
-        currentDomino.setPosition(leftMinusWidth, topMinusWidth);
+        this.lockDominos(
+          currentDomino,
+          otherDomino,
+          leftMinusWidth,
+          topMinusWidth
+        );
       }
       // left side bottom
       if (
         absLeft <= this.snapBoxOverflow &&
         absBottom <= this.snapBoxOverflow
       ) {
-        currentDomino.setPosition(absLeft, absBottom);
+        this.lockDominos(currentDomino, otherDomino, absLeft, absBottom);
       }
 
       if (
         leftMinusWidth <= this.snapBoxOverflow &&
         bottomMinuswidth <= this.snapBoxOverflow
       ) {
-        currentDomino.setPosition(leftMinusWidth, bottomMinuswidth);
+        this.lockDominos(
+          currentDomino,
+          otherDomino,
+          leftMinusWidth,
+          bottomMinuswidth
+        );
       }
       // right side top
       if (absRight <= this.snapBoxOverflow && absTop <= this.snapBoxOverflow) {
-        currentDomino.setPosition(right, top);
+        this.lockDominos(currentDomino, otherDomino, right, top);
       }
       if (
         rightMinusWidth <= this.snapBoxOverflow &&
         topMinusWidth <= this.snapBoxOverflow
       ) {
-        currentDomino.setPosition(rightMinusWidth, topMinusWidth);
+        this.lockDominos(
+          currentDomino,
+          otherDomino,
+          rightMinusWidth,
+          topMinusWidth
+        );
       }
 
       // right side bottom
@@ -196,13 +223,18 @@ export class Board implements AfterViewInit {
         absRight <= this.snapBoxOverflow &&
         absBottom <= this.snapBoxOverflow
       ) {
-        currentDomino.setPosition(right, bottom);
+        this.lockDominos(currentDomino, otherDomino, right, bottom);
       }
       if (
         rightMinusWidth <= this.snapBoxOverflow &&
         bottomMinuswidth <= this.snapBoxOverflow
       ) {
-        currentDomino.setPosition(rightMinusWidth, bottomMinuswidth);
+        this.lockDominos(
+          currentDomino,
+          otherDomino,
+          rightMinusWidth,
+          bottomMinuswidth
+        );
       }
     }
   }
