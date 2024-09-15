@@ -64,28 +64,28 @@ export class Board implements AfterViewInit {
     let left;
     // both vertical
     if (currentComponent.isVertical && otherComponent.isVertical) {
-      left = Math.abs(current.x - other.x);
-      right = Math.abs(current.x - other.x);
+      left = current.x - other.x;
+      right = current.x - other.x;
 
-      top = Math.abs(current.y - (other.y + other.width));
-      bottom = Math.abs(current.y + current.width - other.y);
+      top = current.y - (other.y + other.width);
+      bottom = current.y + current.width - other.y;
       // both horizontal
     } else if (!currentComponent.isVertical && !otherComponent.isVertical) {
-      left = Math.abs(current.x - (other.x + other.width));
-      right = Math.abs(current.x + current.width - other.x);
+      left = current.x - (other.x + other.width);
+      right = current.x + current.width - other.x;
 
       top = current.y - other.top;
       bottom = current.bottom - other.bottom;
     } else if (currentComponent.isVertical && !otherComponent.isVertical) {
-      left = Math.abs(current.x - other.x - 90);
-      right = Math.abs(current.x + 90 - other.x);
-      top = Math.abs(current.y - other.y - 60);
-      bottom = Math.abs(current.y - other.y);
+      left = current.x - other.x - 90;
+      right = current.x + 90 - other.x;
+      top = current.y - other.y - 60;
+      bottom = current.y - other.y;
     } else if (!currentComponent.isVertical && otherComponent.isVertical) {
-      left = Math.abs(current.x - 90 - other.x);
-      right = Math.abs(current.x + 90 - other.x);
-      top = Math.abs(current.y - other.y);
-      bottom = Math.abs(current.y + 120 - other.y);
+      left = current.x - 90 - other.x;
+      right = current.x + 90 - other.x;
+      top = current.y - other.y;
+      bottom = current.y + 120 - other.y;
     } else throw new Error('cannot calculate proximity');
 
     return {
@@ -107,17 +107,32 @@ export class Board implements AfterViewInit {
     // todo- send as css props in html template
     // both vertical
 
+    const absLeft = Math.abs(left);
+    const absRight = Math.abs(right);
+
+    const absTop = Math.abs(top);
+    const absBottom = Math.abs(bottom);
+
+    const leftMinusWidth = Math.abs(absLeft - 60);
+    const rightMinusWidth = Math.abs(absRight - 60);
+    const topMinusWidth = Math.abs(absTop - 60);
+    const bottomMinuswidth = Math.abs(absBottom - 60);
+
+    // console.log(leftMinusWidth, topMinusWidth, rightMinusWidth, leftMinusWidth);
+
+    console.log(leftMinusWidth);
+
     if (
       currentComponent.isVertical &&
       otherComponent.isVertical &&
       right <= this.snapBoxOverflow
     ) {
       // domino joins from above
-      if (top <= this.snapBoxOverflow) {
+      if (absTop <= this.snapBoxOverflow) {
         currentComponent.setPosition(left, top);
       }
       // domino joins from below
-      if (bottom <= this.snapBoxOverflow) {
+      if (absBottom <= this.snapBoxOverflow) {
         currentComponent.setPosition(left, bottom);
       }
     }
@@ -128,11 +143,11 @@ export class Board implements AfterViewInit {
       bottom <= this.snapBoxOverflow
     ) {
       // domino joins from left
-      if (left <= this.snapBoxOverflow) {
+      if (absLeft <= this.snapBoxOverflow) {
         currentComponent.setPosition(left - offset, top);
       }
       // domino joins from right
-      if (right <= this.snapBoxOverflow) {
+      if (absRight <= this.snapBoxOverflow) {
         currentComponent.setPosition(right - offset, top);
       }
     }
@@ -141,12 +156,8 @@ export class Board implements AfterViewInit {
       (currentComponent.isVertical && !otherComponent.isVertical) ||
       (otherComponent.isVertical && !currentComponent.isVertical)
     ) {
-      const leftMinusWidth = Math.abs(left - 60);
-      const rightMinusWidth = Math.abs(right - 60);
-      const topMinusWidth = Math.abs(top - 60);
-      const bottomMinuswidth = Math.abs(bottom - 60);
       // left side top alignment
-      if (left <= this.snapBoxOverflow && top <= this.snapBoxOverflow) {
+      if (absLeft <= this.snapBoxOverflow && absTop <= this.snapBoxOverflow) {
         currentComponent.setPosition(left, top);
       }
       if (
@@ -170,11 +181,14 @@ export class Board implements AfterViewInit {
       ) {
         currentComponent.setPosition(rightMinusWidth, topMinusWidth);
       }
-      if (right <= this.snapBoxOverflow && top <= this.snapBoxOverflow) {
+      if (absRight <= this.snapBoxOverflow && absTop <= this.snapBoxOverflow) {
         currentComponent.setPosition(right, top);
       }
       // right side bottom
-      if (right <= this.snapBoxOverflow && bottom <= this.snapBoxOverflow) {
+      if (
+        absRight <= this.snapBoxOverflow &&
+        absBottom <= this.snapBoxOverflow
+      ) {
         currentComponent.setPosition(right, bottom);
       }
       if (
