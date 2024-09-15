@@ -167,6 +167,12 @@ export class Board implements AfterViewInit {
         currentComponent.setPosition(leftMinusWidth, topMinusWidth);
       }
       // left side bottom
+      if (
+        absLeft <= this.snapBoxOverflow &&
+        absBottom <= this.snapBoxOverflow
+      ) {
+        currentComponent.setPosition(absLeft, absBottom);
+      }
 
       if (
         leftMinusWidth <= this.snapBoxOverflow &&
@@ -175,15 +181,16 @@ export class Board implements AfterViewInit {
         currentComponent.setPosition(leftMinusWidth, bottomMinuswidth);
       }
       // right side top
+      if (absRight <= this.snapBoxOverflow && absTop <= this.snapBoxOverflow) {
+        currentComponent.setPosition(right, top);
+      }
       if (
         rightMinusWidth <= this.snapBoxOverflow &&
         topMinusWidth <= this.snapBoxOverflow
       ) {
         currentComponent.setPosition(rightMinusWidth, topMinusWidth);
       }
-      if (absRight <= this.snapBoxOverflow && absTop <= this.snapBoxOverflow) {
-        currentComponent.setPosition(right, top);
-      }
+
       // right side bottom
       if (
         absRight <= this.snapBoxOverflow &&
