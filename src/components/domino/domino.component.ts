@@ -37,6 +37,7 @@ export class Domino {
       x: currentPosition.x - x,
       y: currentPosition.y - y,
     });
+    this.isLocked = true;
   }
 
   private emitPosition() {

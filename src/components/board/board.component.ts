@@ -46,7 +46,7 @@ export class Board implements AfterViewInit {
           currentComponent,
           child
         );
-        this.snapToPlace(proximity, currentComponent, child, otherRect);
+        this.snapToPlace(proximity, currentComponent, child);
       }
     });
   }
@@ -81,21 +81,25 @@ export class Board implements AfterViewInit {
       right = Math.abs(current.x + 90 - other.x);
       top = Math.abs(current.y - other.y - 60);
       bottom = Math.abs(current.y - other.y);
+    } else if (!currentComponent.isVertical && otherComponent.isVertical) {
+      left = Math.abs(current.x - 90 - other.x);
+      right = Math.abs(current.x + 90 - other.x);
+      top = Math.abs(current.y - other.y);
+      bottom = Math.abs(current.y + 120 - other.y);
     } else throw new Error('cannot calculate proximity');
 
     return {
-      bottom: bottom!,
-      top: top!,
-      left: left!,
-      right: right!,
+      bottom,
+      top,
+      left,
+      right,
     };
   }
 
   public snapToPlace(
     { top, bottom, left, right }: Proximity,
     currentComponent: Domino,
-    otherComponent: Domino,
-    otherRect: DOMRect
+    otherComponent: Domino
   ) {
     const offset = 3;
     const dominoHeight = 60;
@@ -111,12 +115,10 @@ export class Board implements AfterViewInit {
       // domino joins from above
       if (top <= this.snapBoxOverflow) {
         currentComponent.setPosition(left, top);
-        currentComponent.isLocked = true;
       }
       // domino joins from below
       if (bottom <= this.snapBoxOverflow) {
         currentComponent.setPosition(left, bottom);
-        currentComponent.isLocked = true;
       }
     }
     // both horizontal
@@ -128,89 +130,58 @@ export class Board implements AfterViewInit {
       // domino joins from left
       if (left <= this.snapBoxOverflow) {
         currentComponent.setPosition(left - offset, top);
-        currentComponent.isLocked = true;
       }
       // domino joins from right
       if (right <= this.snapBoxOverflow) {
         currentComponent.setPosition(right - offset, top);
-        currentComponent.isLocked = true;
       }
     }
     // current component vetical, other horizontal
-    if (currentComponent.isVertical && !otherComponent.isVertical) {
+    if (
+      (currentComponent.isVertical && !otherComponent.isVertical) ||
+      (otherComponent.isVertical && !currentComponent.isVertical)
+    ) {
+      const leftMinusWidth = Math.abs(left - 60);
+      const rightMinusWidth = Math.abs(right - 60);
+      const topMinusWidth = Math.abs(top - 60);
+      const bottomMinuswidth = Math.abs(bottom - 60);
       // left side top alignment
       if (left <= this.snapBoxOverflow && top <= this.snapBoxOverflow) {
         currentComponent.setPosition(left, top);
-        currentComponent.isLocked = true;
       }
       if (
-        Math.abs(left - 60) <= this.snapBoxOverflow &&
-        Math.abs(top - 60) <= this.snapBoxOverflow
+        leftMinusWidth <= this.snapBoxOverflow &&
+        topMinusWidth <= this.snapBoxOverflow
       ) {
-        currentComponent.setPosition(Math.abs(left - 60), Math.abs(top - 60));
-        currentComponent.isLocked = true;
+        currentComponent.setPosition(leftMinusWidth, topMinusWidth);
       }
-      // left side bottom alignment
+      // left side bottom
 
       if (
-        left <= this.snapBoxOverflow &&
-        Math.abs(top - 60) <= this.snapBoxOverflow
+        leftMinusWidth <= this.snapBoxOverflow &&
+        bottomMinuswidth <= this.snapBoxOverflow
       ) {
-        currentComponent.setPosition(left, Math.abs(top - 60));
-        currentComponent.isLocked = true;
-      }
-      if (
-        Math.abs(left - 60) <= this.snapBoxOverflow &&
-        Math.abs(bottom - 60) <= this.snapBoxOverflow
-      ) {
-        currentComponent.setPosition(
-          Math.abs(left - 60),
-          Math.abs(bottom - 60)
-        );
-
-        currentComponent.isLocked = true;
+        currentComponent.setPosition(leftMinusWidth, bottomMinuswidth);
       }
       // right side top
       if (
-        Math.abs(top - 60) <= this.snapBoxOverflow &&
-        Math.abs(right - 60) <= this.snapBoxOverflow
+        rightMinusWidth <= this.snapBoxOverflow &&
+        topMinusWidth <= this.snapBoxOverflow
       ) {
-        currentComponent.setPosition(
-          Math.abs(left - 60),
-          Math.abs(bottom - 60)
-        );
-
-        console.log('locking');
-
-        currentComponent.isLocked = true;
+        currentComponent.setPosition(rightMinusWidth, topMinusWidth);
       }
-      if (top <= this.snapBoxOverflow && right <= this.snapBoxOverflow) {
-        currentComponent.setPosition(
-          Math.abs(left - 60),
-          Math.abs(bottom - 60)
-        );
-
-        currentComponent.isLocked = true;
+      if (right <= this.snapBoxOverflow && top <= this.snapBoxOverflow) {
+        currentComponent.setPosition(right, top);
       }
       // right side bottom
-      if (bottom <= this.snapBoxOverflow && right <= this.snapBoxOverflow) {
-        currentComponent.setPosition(
-          Math.abs(left - 60),
-          Math.abs(bottom - 60)
-        );
-
-        currentComponent.isLocked = true;
+      if (right <= this.snapBoxOverflow && bottom <= this.snapBoxOverflow) {
+        currentComponent.setPosition(right, bottom);
       }
       if (
-        Math.abs(bottom - 60) <= this.snapBoxOverflow &&
-        Math.abs(right - 60) <= this.snapBoxOverflow
+        rightMinusWidth <= this.snapBoxOverflow &&
+        bottomMinuswidth <= this.snapBoxOverflow
       ) {
-        currentComponent.setPosition(
-          Math.abs(left - 60),
-          Math.abs(bottom - 60)
-        );
-
-        currentComponent.isLocked = true;
+        currentComponent.setPosition(rightMinusWidth, bottomMinuswidth);
       }
     }
   }
