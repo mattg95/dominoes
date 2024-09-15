@@ -27,70 +27,55 @@ export class Board implements AfterViewInit {
   ngAfterViewInit() {
     this.dominos.forEach((childComponent) => {
       childComponent.positionChanged.subscribe((rect) => {
-        const childRect = (rect as any as HTMLElement).getBoundingClientRect();
-
-        this.checkProximity(childRect, childComponent);
+        this.checkProximity(childComponent);
       });
     });
   }
 
-  checkProximity(currentRect: DOMRect, currentComponent: Domino) {
-    this.dominos.forEach((child) => {
-      if (child !== currentComponent) {
-        const otherRect = (
-          document.getElementById('domino') as HTMLElement
-        ).getBoundingClientRect();
+  checkProximity(currentDomino: Domino) {
+    this.dominos.forEach((otherDomino) => {
+      if (otherDomino !== currentDomino) {
         const proximity = this.calculateEdgesProximity(
-          currentRect,
-          otherRect,
-          currentComponent,
-          child
+          currentDomino,
+          otherDomino
         );
-        this.snapToPlace(proximity, currentComponent, child);
+        this.snapToPlace(proximity, currentDomino, otherDomino);
       }
     });
   }
 
   // calcualtes the prxomitiy between the dragged domino and another domino, measured from the dragged domino
   calculateEdgesProximity(
-    current: DOMRect,
-    other: DOMRect,
-    currentComponent: Domino,
-    otherComponent: Domino
+    currentDomino: Domino,
+    otherDomino: Domino
   ): Proximity {
+    const current = currentDomino.rect;
+    const other = otherDomino.rect;
+
     let top;
     let bottom;
     let right;
     let left;
     // both vertical
-    if (currentComponent.getIsVertical() && otherComponent.getIsVertical()) {
+    if (currentDomino.getIsVertical() && otherDomino.getIsVertical()) {
       left = current.x - other.x;
       right = current.x - other.x;
 
       top = Math.abs(current.y - (other.y + other.width));
       bottom = Math.abs(current.y + current.width - other.y);
       // both horizontal
-    } else if (
-      !currentComponent.getIsVertical() &&
-      !otherComponent.getIsVertical()
-    ) {
+    } else if (!currentDomino.getIsVertical() && !otherDomino.getIsVertical()) {
       left = current.x - (other.x + other.width);
       right = current.x + current.width - other.x;
 
       top = current.y - other.top;
       bottom = current.bottom - other.bottom;
-    } else if (
-      currentComponent.getIsVertical() &&
-      !otherComponent.getIsVertical()
-    ) {
+    } else if (currentDomino.getIsVertical() && !otherDomino.getIsVertical()) {
       left = current.x - other.x - 90;
       right = current.x + 90 - other.x;
       top = current.y - other.y - 60;
       bottom = current.y - other.y;
-    } else if (
-      !currentComponent.getIsVertical() &&
-      otherComponent.getIsVertical()
-    ) {
+    } else if (!currentDomino.getIsVertical() && otherDomino.getIsVertical()) {
       left = current.x - 90 - other.x;
       right = current.x + 90 - other.x;
       top = current.y - other.y;
@@ -107,8 +92,8 @@ export class Board implements AfterViewInit {
 
   public snapToPlace(
     { top, bottom, left, right }: Proximity,
-    currentComponent: Domino,
-    otherComponent: Domino
+    currentDomino: Domino,
+    otherDomino: Domino
   ) {
     const offset = 3;
     const dominoHeight = 60;
@@ -128,90 +113,82 @@ export class Board implements AfterViewInit {
     const bottomMinuswidth = Math.abs(absBottom - 60);
 
     if (
-      currentComponent.getIsVertical() &&
-      otherComponent.getIsVertical() &&
+      currentDomino.getIsVertical() &&
+      otherDomino.getIsVertical() &&
       right <= this.snapBoxOverflow
     ) {
       // domino joins others from below
       if (absTop <= this.snapBoxOverflow) {
-        if (
-          currentComponent.getTopValue() === otherComponent.getBottomValue()
-        ) {
-          currentComponent.setPosition(left, top);
+        if (currentDomino.getTopValue() === otherDomino.getBottomValue()) {
+          currentDomino.setPosition(left, top);
         }
       }
       // domino joins from above
       if (absBottom <= this.snapBoxOverflow) {
-        if (
-          currentComponent.getBottomValue() === otherComponent.getTopValue()
-        ) {
-          currentComponent.setPosition(left, bottom);
+        if (currentDomino.getBottomValue() === otherDomino.getTopValue()) {
+          currentDomino.setPosition(left, bottom);
         }
       }
     }
     // both horizontal
     if (
-      !currentComponent.getIsVertical() &&
-      !otherComponent.getIsVertical() &&
+      !currentDomino.getIsVertical() &&
+      !otherDomino.getIsVertical() &&
       bottom <= this.snapBoxOverflow
     ) {
       // domino joins others from right
       if (absLeft <= this.snapBoxOverflow) {
-        if (
-          currentComponent.getLeftValue() === otherComponent.getRightValue()
-        ) {
-          currentComponent.setPosition(left - offset, top);
+        if (currentDomino.getLeftValue() === otherDomino.getRightValue()) {
+          currentDomino.setPosition(left - offset, top);
         }
       }
       // domino joins others from left
       if (absRight <= this.snapBoxOverflow) {
-        if (
-          currentComponent.getRightValue() === otherComponent.getLeftValue()
-        ) {
-          currentComponent.setPosition(right - offset, top);
+        if (currentDomino.getRightValue() === otherDomino.getLeftValue()) {
+          currentDomino.setPosition(right - offset, top);
         }
       }
     }
     // one vetical, other horizontal
     if (
-      (currentComponent.getIsVertical() && !otherComponent.getIsVertical()) ||
-      (!otherComponent.getIsVertical() && currentComponent.getIsVertical())
+      (currentDomino.getIsVertical() && !otherDomino.getIsVertical()) ||
+      (!otherDomino.getIsVertical() && currentDomino.getIsVertical())
     ) {
       console.log(top, bottom, left, right);
 
       // left side top alignment
       if (absLeft <= this.snapBoxOverflow && absTop <= this.snapBoxOverflow) {
-        currentComponent.setPosition(left, top);
+        currentDomino.setPosition(left, top);
       }
       if (
         leftMinusWidth <= this.snapBoxOverflow &&
         topMinusWidth <= this.snapBoxOverflow
       ) {
-        currentComponent.setPosition(leftMinusWidth, topMinusWidth);
+        currentDomino.setPosition(leftMinusWidth, topMinusWidth);
       }
       // left side bottom
       if (
         absLeft <= this.snapBoxOverflow &&
         absBottom <= this.snapBoxOverflow
       ) {
-        currentComponent.setPosition(absLeft, absBottom);
+        currentDomino.setPosition(absLeft, absBottom);
       }
 
       if (
         leftMinusWidth <= this.snapBoxOverflow &&
         bottomMinuswidth <= this.snapBoxOverflow
       ) {
-        currentComponent.setPosition(leftMinusWidth, bottomMinuswidth);
+        currentDomino.setPosition(leftMinusWidth, bottomMinuswidth);
       }
       // right side top
       if (absRight <= this.snapBoxOverflow && absTop <= this.snapBoxOverflow) {
-        currentComponent.setPosition(right, top);
+        currentDomino.setPosition(right, top);
       }
       if (
         rightMinusWidth <= this.snapBoxOverflow &&
         topMinusWidth <= this.snapBoxOverflow
       ) {
-        currentComponent.setPosition(rightMinusWidth, topMinusWidth);
+        currentDomino.setPosition(rightMinusWidth, topMinusWidth);
       }
 
       // right side bottom
@@ -219,13 +196,13 @@ export class Board implements AfterViewInit {
         absRight <= this.snapBoxOverflow &&
         absBottom <= this.snapBoxOverflow
       ) {
-        currentComponent.setPosition(right, bottom);
+        currentDomino.setPosition(right, bottom);
       }
       if (
         rightMinusWidth <= this.snapBoxOverflow &&
         bottomMinuswidth <= this.snapBoxOverflow
       ) {
-        currentComponent.setPosition(rightMinusWidth, bottomMinuswidth);
+        currentDomino.setPosition(rightMinusWidth, bottomMinuswidth);
       }
     }
   }

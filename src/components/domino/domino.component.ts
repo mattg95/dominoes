@@ -24,6 +24,7 @@ export class Domino {
   public direction = 0;
   public dragging = false;
   public isLocked = false;
+  public rect = null;
 
   public getIsVertical() {
     return this.direction % 2 == 1;
@@ -45,8 +46,13 @@ export class Domino {
     this.isLocked = true;
   }
 
+  ngOnInit() {
+    this.emitPosition();
+  }
+
   private emitPosition() {
     const rect = this.domino.nativeElement;
+    this.rect = rect;
     this.positionChanged.emit(rect);
   }
 
