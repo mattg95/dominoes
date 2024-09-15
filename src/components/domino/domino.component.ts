@@ -24,7 +24,6 @@ export class Domino {
   public isVertical = false;
   public dragging = false;
   public isLocked = false;
-  private snapBoxOverflow = 10;
 
   @Output() positionChanged = new EventEmitter<DOMRect>();
 
@@ -49,6 +48,7 @@ export class Domino {
   private rotate() {
     if (!this.isLocked) {
       this.isVertical = !this.isVertical;
+      this.emitPosition();
     }
   }
 
@@ -67,34 +67,6 @@ export class Domino {
       return;
     }
     this.rotate();
-  }
-
-  public snapToPlace(
-    { top, bottom, left, right }: Proximity,
-    currentComponent: Domino
-  ) {
-    const offset = 3;
-    if (currentComponent.isVertical && right <= this.snapBoxOverflow) {
-      if (top <= this.snapBoxOverflow) {
-        currentComponent.setPosition(left, top);
-        currentComponent.isLocked = true;
-      }
-      if (bottom <= this.snapBoxOverflow) {
-        currentComponent.setPosition(left, bottom);
-        currentComponent.isLocked = true;
-      }
-    }
-
-    if (!currentComponent.isVertical && bottom <= this.snapBoxOverflow) {
-      if (left <= this.snapBoxOverflow) {
-        currentComponent.setPosition(left - offset, top);
-        currentComponent.isLocked = true;
-      }
-      if (right <= this.snapBoxOverflow) {
-        currentComponent.setPosition(right - offset, top);
-        currentComponent.isLocked = true;
-      }
-    }
   }
 
   @Input() values = [0, 0];
