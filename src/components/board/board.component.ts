@@ -61,6 +61,7 @@ export class Board implements AfterViewInit {
     let right: number;
     let left: number;
     // both vertical
+
     if (currentDomino.getIsVertical() && otherDomino.getIsVertical()) {
       left = current.x - other.x;
       right = current.x - other.x;
@@ -101,7 +102,10 @@ export class Board implements AfterViewInit {
     y: number
   ) {
     currentDomino.setPosition(x, y);
-    otherDomino.isEnd = false;
+    const lockedDominos = this.dominos.filter((d) => d.isLocked);
+    if (lockedDominos.length > 2) {
+      otherDomino.isEnd = false;
+    }
   }
 
   private snapToPlace(
@@ -113,8 +117,8 @@ export class Board implements AfterViewInit {
     const dominoHeight = 60;
     const dominoWidth = 120;
     // todo- send as css props in html template
-    // both vertical
 
+    // both vertical
     const absLeft = Math.abs(left);
     const absRight = Math.abs(right);
 
