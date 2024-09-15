@@ -154,7 +154,7 @@ export class Board implements AfterViewInit {
     // current component vetical, other horizontal
     if (
       (currentComponent.isVertical && !otherComponent.isVertical) ||
-      (otherComponent.isVertical && !currentComponent.isVertical)
+      (!otherComponent.isVertical && currentComponent.isVertical)
     ) {
       // left side top alignment
       if (absLeft <= this.snapBoxOverflow && absTop <= this.snapBoxOverflow) {
