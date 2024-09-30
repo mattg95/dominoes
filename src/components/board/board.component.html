@@ -1,15 +1,13 @@
-
-
 <div class="board">
-    <domino [values]="[0, 1]" [initial]="true"/>
-    <div class="hand">
-        <domino [values]="[5, 1]" />
-        <domino [values]="[4, 2]"/>
-        <domino [values]="[2, 3]"/>
-        <domino [values]="[6, 1]"/>
-        <domino [values]="[5, 1]"/>
-        <domino [values]="[0, 6]"/>
-    
-    </div>
-
+  <deck />
+  <domino [values]="[0, 1]" [initial]="true" />
+  <div class="right-spacer"></div>
+  <div class="hand">
+    <domino [values]="[5, 1]" />
+    <domino [values]="[4, 2]" />
+    <domino [values]="[2, 3]" />
+    <domino [values]="[6, 1]" />
+    <domino [values]="[5, 1]" />
+    <domino [values]="[0, 6]" />
+  </div>
 </div>

@@ -2,7 +2,7 @@
     width: 100vw;
     height: 100vh;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     background-color: darkgreen;
 
@@ -16,4 +16,8 @@
       position: absolute;
     bottom: 0;
   
+}
+
+.right-spacer {
+  width: 120px
 }

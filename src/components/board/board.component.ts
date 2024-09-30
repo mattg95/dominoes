@@ -11,11 +11,12 @@ import { Hand } from '../hand/hand.component';
 import { CdkDragStart } from '@angular/cdk/drag-drop';
 import { Domino } from '../domino/domino.component';
 import { Proximity } from '../../types';
+import { Deck } from '../deck/deck.component';
 
 @Component({
   selector: 'board',
   standalone: true,
-  imports: [Hand, Domino],
+  imports: [Hand, Domino, Deck],
   templateUrl: './board.component.html',
   styleUrl: './board.component.css',
 })
