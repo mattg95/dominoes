@@ -1,0 +1,14 @@
+.deck-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .domino-wrapper {
+    position: absolute; 
+    top: - var(--domino-height); 
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 10
+  }

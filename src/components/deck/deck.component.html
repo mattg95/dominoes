@@ -1,1 +1,7 @@
-<div class="domino" (click)="uncoverDomino()"></div>
+<div class="deck-wrapper">
+  <div class="domino-wrapper">
+    <ng-container #dominoContainer></ng-container>
+  </div>
+
+  <div class="domino deck" (click)="uncoverDomino()"></div>
+</div>

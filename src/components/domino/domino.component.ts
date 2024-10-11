@@ -64,8 +64,9 @@ export class Domino {
 
   private emitPosition() {
     const rect = this.domino.nativeElement.getBoundingClientRect();
+
     this.rect = rect;
-    this.positionChanged.emit(rect);
+    this.positionChanged.emit(this.rect);
   }
 
   private rotate() {
