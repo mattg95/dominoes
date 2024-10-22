@@ -22,8 +22,14 @@ import { Deck } from '../deck/deck.component';
 })
 export class Board implements AfterViewInit {
   @ViewChildren(Domino) dominos!: QueryList<Domino>;
+  @ViewChild('board', { read: ElementRef }) board!: ElementRef;
 
   private snapBoxOverflow = 10;
+  private isDragging = false;
+  private startX = 0;
+  private startY = 0;
+  private scrollLeft = 0;
+  private scrollTop = 0;
 
   ngAfterViewInit() {
     this.dominos.forEach((childComponent) => {
@@ -31,6 +37,46 @@ export class Board implements AfterViewInit {
         this.checkProximity(childComponent);
       });
     });
+    // Set scroll position to center of the board
+    const boardElement = this.board.nativeElement;
+
+    boardElement.scrollTop =
+      (boardElement.scrollHeight - boardElement.clientHeight) / 2;
+    boardElement.scrollLeft =
+      (boardElement.scrollWidth - boardElement.clientWidth) / 2;
+  }
+
+  onMouseDown(event: MouseEvent) {
+    this.isDragging = true;
+    const boardElement = this.board.nativeElement;
+    this.startX = event.pageX - boardElement.offsetLeft;
+    this.startY = event.pageY - boardElement.offsetTop;
+    this.scrollLeft = boardElement.scrollLeft;
+    this.scrollTop = boardElement.scrollTop;
+  }
+
+  onMouseMove(event: MouseEvent) {
+    if (!this.isDragging) return;
+    event.preventDefault();
+
+    const boardElement = this.board.nativeElement;
+    const x = event.pageX - boardElement.offsetLeft;
+    const y = event.pageY - boardElement.offsetTop;
+
+    const walkX = (x - this.startX) * 1; // Adjust scroll speed if needed
+    const walkY = (y - this.startY) * 1;
+
+    this.board.nativeElement.scrollLeft = this.scrollLeft - walkX;
+
+    boardElement.scrollTop = this.scrollTop - walkY;
+  }
+
+  onMouseUp() {
+    this.isDragging = false;
+  }
+
+  onMouseLeave() {
+    this.isDragging = false;
   }
 
   private checkProximity(currentDomino: Domino) {

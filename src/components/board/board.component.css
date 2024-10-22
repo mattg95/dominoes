@@ -1,22 +1,24 @@
-.board {
-    width: 1000px;
-    height: 100vh;
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* Prevents body from scrolling */
+}
+
+.board {  position: relative;
+    width: 500vw;
+    height: 500vh;
     display: flex;
+    overflow: scroll;
     justify-content: space-between;
     align-items: center;
     background-color: darkgreen;
+    overflow: auto;
+    margin: 0 auto
 
 }
 
 
-
-.hand {
-    display: flex;
-    flex-direction:row;  
-      position: absolute;
-    bottom: 0;
-  
-}
 
 .right-spacer {
   width: 120px

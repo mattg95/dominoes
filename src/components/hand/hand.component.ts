@@ -3,6 +3,7 @@ import {
   ElementRef,
   EventEmitter,
   HostListener,
+  Input,
   Output,
   SimpleChanges,
   ViewChild,
@@ -24,6 +25,7 @@ export class Hand {
   container!: ViewContainerRef;
   dominoSubscription: Subscription = new Subscription();
   public newDominoValues: number[];
+  @Input() isComputer = false;
 
   constructor(
     private root: ElementRef,
@@ -34,19 +36,17 @@ export class Hand {
     // Subscribe to the data$ Observable from the shared service
     this.dominoSubscription = this.handPositionService.newDomino$.subscribe(
       (data) => {
-        console.log('Received data:', data);
-        console.log(this.container);
-        if (data) {
+        if (data.isPlayersTurn === this.isComputer) {
           const newDomino = this.container.createComponent(Domino);
           this.container.insert(newDomino.hostView);
 
-          this.newDominoValues = data;
-          console.log(newDomino);
+          this.newDominoValues = data.values;
           newDomino.instance.values = this.newDominoValues;
           this.emitPosition();
         }
       }
     );
+    this.handPositionService.registerHand(this);
   }
 
   ngAfterViewInit() {

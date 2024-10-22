@@ -1,10 +1,14 @@
-<div class="hand">
-  <domino [values]="[0, 0]" direction="horizontal" />
-  <domino [values]="[1, 1]" />
-  <domino [values]="[2, 2]" />
-  <domino [values]="[3, 3]" />
-  <domino [values]="[4, 4]" />
-  <domino [values]="[5, 5]" />
-  <domino [values]="[6, 6]" />
+<div
+  class="hand-inner"
+  [style.top]="isComputer ? '0px' : 'auto'"
+  [style.bottom]="!isComputer ? '0px' : 'auto'"
+>
+  <domino [values]="[0, 0]" [hidden]="isComputer" />
+  <domino [values]="[1, 1]" [hidden]="isComputer" />
+  <domino [values]="[2, 2]" [hidden]="isComputer" />
+  <domino [values]="[3, 3]" [hidden]="isComputer" />
+  <domino [values]="[4, 4]" [hidden]="isComputer" />
+  <domino [values]="[5, 5]" [hidden]="isComputer" />
+  <domino [values]="[6, 6]" [hidden]="isComputer" />
   <ng-container #handContainer></ng-container>
 </div>

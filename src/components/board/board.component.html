@@ -1,13 +1,16 @@
-<div class="board">
+<div
+  #board
+  class="board"
+  (mousedown)="onMouseDown($event)"
+  (mousemove)="onMouseMove($event)"
+  (mouseup)="onMouseUp()"
+  (mouseleave)="onMouseLeave()"
+>
+  <hand class="hand" [isComputer]="true" />
+
   <deck />
+
   <domino [values]="[0, 1]" [initial]="true" />
   <div class="right-spacer"></div>
-  <hand class="hand">
-    <domino [values]="[5, 1]" />
-    <domino [values]="[4, 2]" />
-    <domino [values]="[2, 3]" />
-    <domino [values]="[6, 1]" />
-    <domino [values]="[5, 1]" />
-    <domino [values]="[0, 6]" />
-  </hand>
+  <hand class="hand" />
 </div>

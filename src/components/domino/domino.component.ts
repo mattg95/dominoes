@@ -1,6 +1,5 @@
 import {
   Component,
-  ContentChild,
   ElementRef,
   EventEmitter,
   Input,
@@ -12,7 +11,6 @@ import { Dots } from '../dots/dots.component';
 import { CommonModule } from '@angular/common';
 import { CdkDrag } from '@angular/cdk/drag-drop';
 import { CdkDragStart, CdkDragEnd } from '@angular/cdk/drag-drop';
-import { Proximity } from '../../types';
 
 @Component({
   selector: 'domino',
@@ -30,6 +28,7 @@ export class Domino {
 
   @Input() values = [0, 0];
   @Input() initial = false;
+  @Input() hidden = false;
 
   @Output() positionChanged = new EventEmitter<DOMRect>();
 
@@ -48,7 +47,6 @@ export class Domino {
   }
 
   public setPosition(x: number, y: number) {
-    console.log('snappin');
     const currentPosition = this.draggable._dragRef.getFreeDragPosition();
     this.draggable._dragRef.setFreeDragPosition({
       x: currentPosition.x - x,

@@ -1,26 +1,17 @@
-
 <div
-(click)="handleClick($event)"
-(cdkDragStarted)="handleDragStart($event)"
-(cdkDragEnded)="handleDragEnd($event)"
-#draggable="cdkDrag"
-[class.pointer-events-none]="draggable._dragRef.isDragging()"
-cdkDrag
-[cdkDragDisabled]="isLocked"
-cdkDragBoundary="html"
-#domino
-
-
+  (click)="handleClick($event)"
+  (cdkDragStarted)="handleDragStart($event)"
+  (cdkDragEnded)="handleDragEnd($event)"
+  #draggable="cdkDrag"
+  [class.pointer-events-none]="draggable._dragRef.isDragging()"
+  cdkDrag
+  [cdkDragDisabled]="isLocked"
+  cdkDragBoundary="html"
+  #domino
 >
-  <div
-    class="domino"
-    [ngClass]="'transform' + direction"
-    [ngClass]="{initial}"
-    
-  >
-    <dots [value]="values[0]" />
-    <div class="divider"></div>
-    <dots [value]="values[1]" />
+  <div class="domino" [ngClass]="'transform' + direction" [ngClass]="{initial}">
+    <dots [value]="values[0]" [style.visibility]="hidden ? 'hidden' : 'auto'" />
+    <div class="divider" [style.visibility]="hidden ? 'hidden' : 'auto'"></div>
+    <dots [value]="values[1]" [style.visibility]="hidden ? 'hidden' : 'auto'" />
   </div>
 </div>
-
